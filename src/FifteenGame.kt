@@ -1,24 +1,24 @@
 import java.util.*
 
-fun createRandomMatrix(height: Int, width: Int): Matrix<Int> {
+fun createRandomField(height: Int, width: Int): Field<Int> {
     val num = height * width
-    val matrix = MatrixImpl(height, width, 0)
+    val field = FieldImpl(height, width, 0)
     val list = (0 until num).toMutableList()
     var i = 0
     while (list.isNotEmpty()) {
         val value = Random().nextInt(num)
         if (value in list) {
-            matrix[i / width, i % width] = value
+            field[i / width, i % width] = value
             list.remove(value)
             i++
         }
     }
-    return matrix
+    return field
 }
 
-fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
-    val M = MatrixImpl(matrix.height, matrix.width, 0)
-    for (i in 0 until M.height) for (j in 0 until M.width) { M[i, j] = matrix[i, j]; M[matrix[i, j]] = Cell(i, j) }
+fun fifteenGameMoves(field: Field<Int>, moves: List<Int>): Field<Int> {
+    val M = FieldImpl(field.height, field.width, 0)
+    for (i in 0 until M.height) for (j in 0 until M.width) { M[i, j] = field[i, j]; M[field[i, j]] = Cell(i, j) }
     val num = M.height * M.width
     for (i in 0 until moves.size) {
         if (moves[i] !in 1 until num) throw IllegalStateException()
@@ -34,12 +34,12 @@ fun fifteenGameMoves(matrix: Matrix<Int>, moves: List<Int>): Matrix<Int> {
             }
             else throw IllegalStateException()
         }
-        printlnMatrix(M)
+        printlnField(M)
     }
     return M
 }
 
-fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> {
+fun fifteenGameSolution(field: Field<Int>): List<Int> {
     val stepsLeftDown = listOf(1, 2, 2, 3, 0)
     val stepsLeftUp = listOf(3, 2, 2, 1, 0)
     val stepsUpRight = listOf(0, 3, 3, 2, 1)
@@ -47,13 +47,13 @@ fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> {
     val stepRightUp = listOf(3, 0, 0, 1, 2)
     var trajectory = listOf<Int>()
     var tempSteps: List<Int>
-    val M = MatrixImpl(matrix.height, matrix.width, 0)
+    val M = FieldImpl(field.height, field.width, 0)
     for (i in 0 until M.height)
         for (j in 0 until M.width) {
-            M[i, j] = matrix[i, j]
-            M[matrix[i, j]] = Cell(i, j)
+            M[i, j] = field[i, j]
+            M[field[i, j]] = Cell(i, j)
         }
-    for (l in 0 until matrix.height - 2) {
+    for (l in 0 until field.height - 2) {
         println(l)
         trajectory += M.change(List(M[0].row - l) { 3 } + List(M[0].column) { 2 })
         for (k in l * M.width + 1..(l + 1) * M.width) {
@@ -122,7 +122,7 @@ fun fifteenGameSolution(matrix: Matrix<Int>): List<Int> {
     return trajectory
 }
 
-fun MatrixImpl<Int>.change(moves: List<Int>): MutableList<Int> {
+fun FieldImpl<Int>.change(moves: List<Int>): MutableList<Int> {
     val trajectory = mutableListOf<Int>()
     for (i in 0 until moves.size) {
         var dColumn = 0
@@ -147,7 +147,7 @@ fun MatrixImpl<Int>.change(moves: List<Int>): MutableList<Int> {
 }
 
 fun main(args: Array<String>) {
-    val m = createRandomMatrix(24, 43)
+    val m = createRandomField(4, 4)
     fifteenGameMoves(m, fifteenGameSolution(m))
 }
 
@@ -159,9 +159,9 @@ fun twoStr(n: Int) = when (n) {
     else -> throw IllegalArgumentException("num of digits is more then 1000")
 }
 
-fun printlnMatrix(matrix: Matrix<Int>) {
-    for (j in 0 until matrix.height) {
-        for (k in 0 until matrix.width) print(twoStr(matrix[j, k]))
+fun printlnField(field: Field<Int>) {
+    for (j in 0 until field.height) {
+        for (k in 0 until field.width) print(twoStr(field[j, k]))
         println("")
         println("")
     }

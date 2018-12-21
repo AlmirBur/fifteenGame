@@ -1,6 +1,6 @@
 data class Cell(val row: Int, val column: Int)
 
-interface Matrix<E> {
+interface Field<E> {
     val height: Int
     val width: Int
 
@@ -11,11 +11,7 @@ interface Matrix<E> {
     operator fun set(cell: Cell, value: E)
 }
 
-fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> =
-        if (height < 1 || width < 1) throw IllegalArgumentException()
-        else MatrixImpl(height, width, e)
-
-class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : Matrix<E> {
+class FieldImpl<E>(override val height: Int, override val width: Int, e: E) : Field<E> {
     private val elements = mutableMapOf<Cell, E>()
 
     private val keys = MutableList(this.height * this.width) { Cell(0, 0) }
@@ -37,7 +33,7 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
 
     operator fun set(index: Int, element: Cell) { keys[index] = element }
 
-    override fun equals(other: Any?) = if (other is Matrix<*> && height == other.height && width == other.width) {
+    override fun equals(other: Any?) = if (other is Field<*> && height == other.height && width == other.width) {
         var result = true
         for (i in 0 until height) for (j in 0 until width) if (other[i, j] != this[i, j]) {result = false; break}
         result
