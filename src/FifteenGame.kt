@@ -40,6 +40,7 @@ fun fifteenGameMoves(field: Field<Int>, moves: List<Int>): Field<Int> {
 }
 
 fun fifteenGameSolution(field: Field<Int>): List<Int> {
+    if (field.width < 3 || field.height < 3) throw IllegalArgumentException()
     val stepsLeftDown = listOf(1, 2, 2, 3, 0)
     val stepsLeftUp = listOf(3, 2, 2, 1, 0)
     val stepsUpRight = listOf(0, 3, 3, 2, 1)
@@ -147,7 +148,7 @@ fun FieldImpl<Int>.change(moves: List<Int>): MutableList<Int> {
 }
 
 fun main(args: Array<String>) {
-    val m = createRandomField(4, 4)
+    val m = createRandomField(3, 3)
     fifteenGameMoves(m, fifteenGameSolution(m))
 }
 
@@ -160,10 +161,11 @@ fun twoStr(n: Int) = when (n) {
 }
 
 fun printlnField(field: Field<Int>) {
+    print("next")
+    readLine()
     for (j in 0 until field.height) {
         for (k in 0 until field.width) print(twoStr(field[j, k]))
         println("")
         println("")
     }
-    readLine()
 }
